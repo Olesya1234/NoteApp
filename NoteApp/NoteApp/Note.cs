@@ -5,6 +5,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace NoteApp
 {
@@ -14,49 +15,60 @@ namespace NoteApp
     /// </summary>
     public class Note :ICloneable
     {
-        /// <summary>
-        /// Имя заметки
-        /// </summary>
-        private string _title;
-        /// <summary>
-        /// Категория заметки
-        /// </summary>
-        private NoteCategory _noteCategory;
-        private string _text = "Без названия";
-
-        /// <summary>
-        /// Время создания
-        /// </summary>        
-        private DateTime _timeCreated;
+        //public readonly DateTime TimeCreated;
         /// <summary>
         /// Время последнего изменения
         /// </summary>
+        private string _name = "Без названия";
+        private string _text ;
+        private DateTime _timeCreated;
+        /// <summary>
+        /// Категория заметки
+        /// </summary>
+        private NoteCategory _noteCategory; 
         private DateTime _lastChangeTime;
-        public readonly DateTime CreatedTime;
+        
+        /// <summary>
+        /// Создание заметки
+        /// </summary>
+        /// <param name="CreationTime">Дата создания заметки</param>
+        public Note(DateTime CreationTime)
+        {
+            TimeCreated = CreationTime;
+            LastChangeTime = CreationTime;
+                        
+        }
+
+        public Note()
+        {
+        }
 
         /// <summary>
         /// Имя записи.Должно быть меньше 50 символов.
         /// </summary>
-        public string Title
+        public string Name
         {
             get
             {
-                return _title;
+                return _name;
             }
             set
             {
-                if(value.Length > 50)
+                if (value.Length >0 && value.Length < 50)
                 {
-                    throw new ArgumentException("Название заголовка меньше 50 символов");
+                    _name = value;
                 }
-                _title = value;
+                else
+                {
+                    throw new ArgumentException("Имя заметки должна быть больше 0 символов и меньше 50");
+                }                
             }
         }
 
         /// <summary>
         /// Возвращает категорию заметки
         /// </summary>
-        public NoteCategory Category
+        public NoteCategory NoteCategory
         {
            get
             {
@@ -73,10 +85,36 @@ namespace NoteApp
                     throw new ArgumentException("Некорректная категория");
                 }
             }
+        }   
+        
+        /// <summary>
+        /// Возвращает текст заметки
+        /// </summary>
+        public string Text
+        {
+            get
+            {
+                return _text;
+            }
+            set
+            {
+                if (value.Length > 0)
+                {
+                    _text = value;
+                    _lastChangeTime = DateTime.Now;
+                }
+                else
+                {
+                    if (value.Length <= 0)
+                    {
+                        throw new ArgumentException("Текст заметки пуст.");
+                    }
+                }
+            }
         }
 
         /// <summary>
-        /// Дата создания. Должна быть не больше текущей даты.
+        /// Время создания заметки
         /// </summary>
         public DateTime TimeCreated
         {
@@ -86,28 +124,18 @@ namespace NoteApp
             }
             set
             {
-                if ((value > (DateTime.Now)))
+                if (value <= DateTime.Now)
                 {
-                    throw new ArgumentException("Неверная дата создания");
+                    _timeCreated = value;
                 }
-                _timeCreated = value;
-            }
-        }
+                else
+                {
+                    if (value > DateTime.Now)
 
-        /// <summary>
-        /// Конструктор времени.
-        /// </summary>
-        public Note(DateTime createTime)
-        {
-            if (createTime <= DateTime.Now)
-            {
-                _lastChangeTime = createTime;
-                CreatedTime = createTime;
-            }
-
-            else
-            {
-                throw new ArgumentException("Неверная дата.");
+                    {
+                        throw new ArgumentException("Дата создания заметки не должна быть позже реального времени.");
+                    }
+                }
             }
         }
 
@@ -122,38 +150,33 @@ namespace NoteApp
             }
             set
             {
-                if ((value > (DateTime.Now) & (value < TimeCreated)))
+                if (value <= DateTime.Now && value >= TimeCreated)
                 {
-                    throw new ArgumentException("Неверное время последнего изменения");
+                    _lastChangeTime = value;
                 }
-                _lastChangeTime = value;
+                else
+                {
+                    if (value > DateTime.Now || value < TimeCreated)
+
+                    {
+                        throw new ArgumentException("Время последнего игменения заметки не должна быть позже реального времени.");
+                    }
+                }
             }
         }
-        /// <summary>
-        /// Возвращает текст заметки
-        /// </summary>
-        public string Text
-        {
-            get
-            {
-                return _text;
-            }
-            set
-            {
-                _text = value;
-                                               
-            }
-        }
+
+        
         /// <summary>
         /// Клонирование(для дублирования заметки).
         /// </summary>
         /// <returns></returns>
         public object Clone()
         {
-            var newNote = new Note(CreatedTime);
-            newNote.Title = _title;
+            var newNote = new Note(TimeCreated);
+            newNote.Name = _name;
+            newNote.NoteCategory = _noteCategory;
             newNote.Text = _text;
-            newNote.Category = _noteCategory;
+            newNote.TimeCreated = _timeCreated;
             newNote.LastChangeTime = _lastChangeTime;
             return newNote;
         }
