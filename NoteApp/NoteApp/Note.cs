@@ -159,7 +159,7 @@ namespace NoteApp
                     if (value > DateTime.Now || value < TimeCreated)
 
                     {
-                        throw new ArgumentException("Время последнего игменения заметки не должна быть позже реального времени.");
+                        throw new ArgumentException("Время последнего изменения заметки не должна быть позже реального времени.");
                     }
                 }
             }
