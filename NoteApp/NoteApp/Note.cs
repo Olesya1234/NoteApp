@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
 
 namespace NoteApp
 {
@@ -15,6 +16,7 @@ namespace NoteApp
     /// </summary>
     public class Note :ICloneable
     {
+        //[JsonProperty]
         //public readonly DateTime TimeCreated;
         /// <summary>
         /// Время последнего изменения
@@ -100,8 +102,7 @@ namespace NoteApp
             {
                 if (value.Length > 0)
                 {
-                    _text = value;
-                    _lastChangeTime = DateTime.Now;
+                    _text = value;                    
                 }
                 else
                 {
@@ -180,5 +181,6 @@ namespace NoteApp
             newNote.LastChangeTime = _lastChangeTime;
             return newNote;
         }
+
     }
 }

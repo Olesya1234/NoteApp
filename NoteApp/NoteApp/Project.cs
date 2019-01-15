@@ -13,26 +13,23 @@ namespace NoteApp
     {
         /// <summary>
         /// Список всех заметок
-        /// </summary>
-        //public List<Note> NotesList;
+        /// </summary>       
         public List<Note> Notes = new List<Note>();
-        /// <summary>
-        /// Конструктор класса Project
-        /// </summary>
-        /* public Project()
-         {
-             NotesList = new List<Note>();
-         }  */
+        
+        public Note LastSelectedNote = null;
+       
 
         public void Sort()
         {
             Notes.Sort((y, x) => x.LastChangeTime.CompareTo(y.LastChangeTime));
         }
+
         public List<Note> Sort(NoteCategory type)
         {
             var findedNotes = Notes.FindAll(a => a.NoteCategory == type);
             findedNotes.Sort((y, x) => x.LastChangeTime.CompareTo(y.LastChangeTime));
             return findedNotes;
+            
         }
     }
 }

@@ -8,16 +8,11 @@ namespace NoteApp.UnitTests
     public class NoteTest
     {
 
-
-
         [Test(Description = " тест  Note")]
         public void NoteTestNote()
         {
             var note = new Note();
-
         }
-
-
 
 
         [Test(Description = "Позитивный тест геттера Name")] 
@@ -65,6 +60,18 @@ namespace NoteApp.UnitTests
             NUnit.Framework.Assert.AreEqual(expected, actual, "Геттер NoteCategory возвращает неправильную категорию заметки");
         }
 
+        [Test(Description = "Позитивный тест cеттера Category")]
+        public void TestNoteCategorySet_CorrectValue()
+        {
+            var category = NoteCategory.Home;
+            var note = new Note(DateTime.Now);
+            note.NoteCategory = category;
+
+            var newCategory = NoteCategory.Home;
+            var actual = note.NoteCategory;
+            Assert.AreEqual(newCategory, actual, "Сеттер NoteCategory задает неверное значение");
+        }
+
         [Test(Description = "Присвоение неправильного NoteCategory больше 0 символов")]
         public void TestNoteCategorySet_Longer0Symbols()
         {
@@ -78,26 +85,33 @@ namespace NoteApp.UnitTests
         [Test(Description = "Позитивный тест геттера Text")]
         public void TestTextGet_CorrectValue()
         {
-            var expected = "Смирнов";//?
             var note = new Note();
-            note.Text = expected;
+            var expected = "Смирнов";//?            
+            expected = note.Text;
             var actual = note.Text;
-
             NUnit.Framework.Assert.AreEqual(expected, actual, "Геттер Text возвращает неправильный Text");
+        }
+
+        [Test(Description = "Позитивный тест cеттера Text")]
+        public void TestTextSet_CorrectValue()
+        {
+            var text = "Смирнов";
+            var note = new Note(DateTime.Now);
+            note.Text = text;
+
+            var NewText = "Смирнов";
+            var actual = note.Text;
+            Assert.AreEqual(NewText, actual, "Сеттер Text задает неверное значение");
         }
 
         [Test(Description = "Присвоение неправильного Text больше 0 символов")]
         public void TestTextSet_Longer0Symbols()
         {
-            var wrongText = "";
+            var wrongText = string.Empty;
             var note = new Note();
-            Assert.Throws<ArgumentException>(
-                () => { note.Text = wrongText; },
-                "Должно возникать исключение, если название длиннее 0 символов");
+            Assert.Throws<ArgumentException>(() => { note.Text = wrongText; },
+                "Должно возникать исключение, если Text длиннее 0 символов");
         }
-
-
-        
 
 
         [Test(Description = "Позитивный тест клонирования Clone")]
@@ -113,16 +127,12 @@ namespace NoteApp.UnitTests
             NUnit.Framework.Assert.AreEqual(expected.Name, actual.Name, "Геттер Text возвращает неправильное название");
             NUnit.Framework.Assert.AreEqual(expected.NoteCategory, actual.NoteCategory, "Геттер Text возвращает неправильное название");
             NUnit.Framework.Assert.AreEqual(expected.Text, actual.Text, "Геттер Text возвращает неправильное название");
-        }
-
-
-
-
+        }       
 
         [Test(Description = "Позитивный тест геттера TimeCreated")]
         public void TestTimeCreatedGet_CorrectValue()
         {
-            var expected = DateTime.Now;//?
+            var expected = DateTime.Now;
             var note = new Note();
             note.TimeCreated = expected;
             var actual = note.TimeCreated;
@@ -132,18 +142,17 @@ namespace NoteApp.UnitTests
 
 
 
-        [Test(Description = "Дата создания больше текущей дата")]
-        public void TestNoteCreatedSet_LongerCurrentDate()
+        [Test(Description = "Дата создания не должна быть больше текущей даты")]
+        public void TestTimeCreatedSet_LongerCurrentDate()
         {
             var time = DateTime.Now;
             var note = new Note(DateTime.Now);
-            time = time.AddYears(1000);
+            time = time.AddYears(100);
             Assert.Throws<ArgumentException>(
                 () => { note.TimeCreated = time; }, 
-                "Должно возникать исключение");
+                "Должно возникать исключение,если дата создания больше текущей");
         }
-
-
+               
 
 
         [Test(Description = "Позитивный тест геттера LastChangeTime")]
@@ -162,21 +171,21 @@ namespace NoteApp.UnitTests
         {
             var time = DateTime.Now;
             var note = new Note(DateTime.Now);
-            time = time.AddDays(100);
+            time = time.AddDays(-100);
             Assert.Throws<ArgumentException>(
                 () => { note.LastChangeTime = time; },
-                "Должно возникать исключение, если название длиннее 0 символов");
+                "Должно возникать исключение, если дата изменения позже текущей");
         }
 
-        [Test(Description = "Дата изменения должна быть позже даты создания")]
+        [Test(Description = "Дата последнего изменения должна быть позже даты создания")]
         public void TestLastChangeTimeSet_LongerCreated()
         {
             var time = DateTime.Now;
             var note = new Note(time);
-            time = time.AddDays(-100);
+            time = time.AddDays(100);
             Assert.Throws<ArgumentException>(
                 () => { note.LastChangeTime = time; },
-                "Должно возникать исключение, если название длиннее 0 символов");
+                "Должно возникать исключение, если дата последнего изменения  не позже даты создания");
         }
 
     }

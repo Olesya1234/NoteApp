@@ -6,24 +6,20 @@ namespace NoteAppTests
 {
     [TestFixture]
     public class ProjectManagerTest
-    {
-        [Test(Description = "")]
-        public void TestProjectManagerSaveToFile()
+    {           
+                  
+        [Test(Description = "Сохранение в неверный путь.")]
+        public void TestProjectManagerSave_NotCorrectPath()
         {
-            Note note = new Note();
-            note.Text = "Смирнов";
             var project = new Project();
-            project.Notes.Add(note);
-            ProjectManager.Save(project, "c:\\Users\\User\\Desktop\\111.json");
+            Assert.Throws<System.IO.IOException>(() => { ProjectManager.Save(project, "c:\\distribution\\"); },
+                "Должно возникать исключение, если путь неверен.");
+        }
 
-            var actual = ProjectManager.Load("c:\\Users\\User\\Desktop\\111.json");
-
-            var expected = project;
-
-            Assert.AreEqual(expected.Notes.Count, actual.Notes.Count, "Different count of notes in project");
-
-            Assert.AreEqual(expected.Notes[0].Text, actual.Notes[0].Text, "Сериализация работает неверно!");
-
+        [Test(Description = "Загрузка из неверного пути.")]
+        public void TestProjectManagerLoad_NotCorrectPath()
+        {
+            Assert.Throws<System.IO.FileNotFoundException>(() => { var project = ProjectManager.Load("c:\\distribution\\"); }, "Должно возникать исключение, если путь неверен.");
         }
     }
 }

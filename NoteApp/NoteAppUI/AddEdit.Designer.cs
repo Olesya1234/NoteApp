@@ -93,6 +93,7 @@
             this.CreatedDateTimePicker.Name = "CreatedDateTimePicker";
             this.CreatedDateTimePicker.Size = new System.Drawing.Size(122, 20);
             this.CreatedDateTimePicker.TabIndex = 8;
+            this.CreatedDateTimePicker.ValueChanged += new System.EventHandler(this.CreatedDateTimePicker_ValueChanged);
             // 
             // UpdatedDateTimePicker
             // 
@@ -100,6 +101,7 @@
             this.UpdatedDateTimePicker.Name = "UpdatedDateTimePicker";
             this.UpdatedDateTimePicker.Size = new System.Drawing.Size(127, 20);
             this.UpdatedDateTimePicker.TabIndex = 9;
+            this.UpdatedDateTimePicker.ValueChanged += new System.EventHandler(this.UpdatedDateTimePicker_ValueChanged);
             // 
             // Ok
             // 

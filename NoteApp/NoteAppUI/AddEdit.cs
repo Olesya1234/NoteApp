@@ -15,11 +15,14 @@ namespace NoteAppUI
     {
         //Поле для временного хранения переданных данных 
         public Note _note;       
-        
+        //public Note Note;
+
         public AddEdit()
         {
             InitializeComponent();
+
             this.Text = "Add/Edit Note";
+
             CategoryComboBox.Items.Add(NoteCategory.Work);
             CategoryComboBox.Items.Add(NoteCategory.Home);
             CategoryComboBox.Items.Add(NoteCategory.HealthAndSport);
@@ -28,6 +31,7 @@ namespace NoteAppUI
             CategoryComboBox.Items.Add(NoteCategory.Finance);
             CategoryComboBox.Items.Add(NoteCategory.Other);
         }
+        
 
         //Свойство, через которое будут передаваться данные извне 
         public Note Note
@@ -66,6 +70,7 @@ namespace NoteAppUI
             _note = note;
             this.DialogResult = DialogResult.OK;
             this.Close();
+            
         }
 
         private void titleTextBox_TextChanged(object sender, EventArgs e)
@@ -83,8 +88,9 @@ namespace NoteAppUI
 
 
         private void Form2_Load(object sender, EventArgs e)
-        {
-                   
+        {                  
+               
+           
         }
 
         private void Cancel_Click(object sender, EventArgs e)
@@ -96,6 +102,7 @@ namespace NoteAppUI
         
           private void CategoryComboBox_SelectedIndexChanged(object sender, EventArgs e)
           {
+            
             try
             {
                 _note.NoteCategory = (NoteCategory)CategoryComboBox.SelectedIndex;
@@ -109,6 +116,23 @@ namespace NoteAppUI
           }
 
         private void noteTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (noteTextBox.Text.Length > 0)
+            {
+                noteTextBox.BackColor = Color.White;
+            }
+            else
+            {
+                noteTextBox.BackColor = Color.DarkMagenta;
+            }
+        }
+
+        private void CreatedDateTimePicker_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void UpdatedDateTimePicker_ValueChanged(object sender, EventArgs e)
         {
 
         }

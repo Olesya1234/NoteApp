@@ -1,5 +1,6 @@
 ﻿using NoteApp;
 using System;
+using System.IO;
 using System.Windows.Forms;
 
 
@@ -7,12 +8,12 @@ namespace NoteAppUI
 {
     public partial class MainForm : Form
 	{
-        //public Project list;   
+        
         //Данные которые будут передаваться
          private Project _project = new Project();
-
-        //private readonly string _address = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\txt.json";
-        //
+        
+        private readonly string _address = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\NoteApp.notes";
+    
         public MainForm()
 		{
 			InitializeComponent();
@@ -23,7 +24,8 @@ namespace NoteAppUI
            {
             categoryComboBox.Items.Add(e);
            }
-            //_project = ProjectManager.Load(_address);
+            _project = ProjectManager.Load(_address);
+            
             AllNotes();
         }
         private void AllNotes()
@@ -35,10 +37,25 @@ namespace NoteAppUI
             {
                 ListNotes.Items.Add(note.Name);
             }
-            UpdateCurrentNote();
+            
         }
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (File.Exists(_address))
+            {
+                _project = ProjectManager.Load(_address);
+            }
+            else
+            {
+                _project = new Project();
+                ProjectManager.Save(_project,_address);
+            }
+
+            if (_project.LastSelectedNote != null)
+            {
+                var index = _project.Notes.FindIndex(a => a.ToString() == _project.LastSelectedNote.ToString());
+                //  ListNotes.SelectedItem = _noteList.LastSelectedNote;
+            }
             
         }  
         
@@ -49,16 +66,17 @@ namespace NoteAppUI
         /// <param name="e"></param>
         private void Add_Click(object sender, EventArgs e)
         {
-            var notes = new AddEdit();          //Создаем форму
-            notes.Note = new Note(DateTime.Now);//Передаем ему данные
-            if (notes.ShowDialog() == DialogResult.OK)//отображаем форму для редактирования (если )
-            {
-                var note = notes.Note;  //забираем изменненные данные
-                _project.Notes.Add(note);//
-                ListNotes.Items.Add(note.Name);
-                //ProjectManager.Save(_project, _address);
-                AllNotes();
-            }
+             var notes = new AddEdit();          //Создаем форму
+             notes.Note = new Note(DateTime.Now);//Передаем ему данные
+             if (notes.ShowDialog() == DialogResult.OK)//отображаем форму для редактирования (если )
+             {
+                 var note = notes.Note;  //забираем изменненные данные
+                 _project.Notes.Add(note);//
+                 ListNotes.Items.Add(note.Name);
+                 ProjectManager.Save(_project, _address); //"c:\\Users\\User\\Desktop\\txt.json"); //Environment
+                 AllNotes();
+             }
+            
         }  
         
         
@@ -74,13 +92,14 @@ namespace NoteAppUI
             if (notes.ShowDialog() == DialogResult.OK)          //отображаем форму для редактирования (если )
             {
                 _project.Notes[ListNotes.SelectedIndex] = notes.Note;
-                //ProjectManager.Save(_project, _address);
+                ProjectManager.Save(_project, _address); //"c:\\Users\\User\\Desktop\\txt.json");
                 AllNotes();
             }
             else
             {
                AllNotes();
-            }            
+            }  
+           
         }
         
         /// <summary>
@@ -91,15 +110,16 @@ namespace NoteAppUI
         private void Remove_Click(object sender, EventArgs e)
         {
 
-           if (MessageBox.Show("Удалить заметку?", "Удаление", MessageBoxButtons.YesNo) == DialogResult.Yes)
-           { 
-               _project.Notes.Remove(_project.Notes[ListNotes.SelectedIndex]);
-               ListNotes.Items.Remove(ListNotes.SelectedIndex);
+            if (MessageBox.Show("Удалить заметку?", "Удаление", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            { 
+                _project.Notes.Remove(_project.Notes[ListNotes.SelectedIndex]);
+                ListNotes.Items.Remove(ListNotes.SelectedIndex);
 
-                //ProjectManager.Save(_project, _address);
-                ListNotes.Items.Clear();
-                AllNotes();
-            }            
+                 ProjectManager.Save(_project, _address); // "c:\\Users\\User\\Desktop\\txt.json");
+                 ListNotes.Items.Clear();
+                 AllNotes();
+             }    
+            
         }
         
         /// <summary>
@@ -110,6 +130,7 @@ namespace NoteAppUI
         private void ListNotes_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateCurrentNote();
+
         }
 
         private void UpdateCurrentNote()
@@ -137,6 +158,7 @@ namespace NoteAppUI
                     temp = form.Note;
                 }
             }
+          
         }
 
         /// <summary>
@@ -183,8 +205,9 @@ namespace NoteAppUI
             Remove_Click(sender, e);
                       
         }
+        
 
-           
+
         private void addNoteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Add_Click(sender, e);
